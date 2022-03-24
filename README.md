@@ -1,51 +1,48 @@
----
+# Svelte + Vite
 
-# Svelte PWA
+This template should help get you started developing with Svelte in Vite.
 
-This is a Progressive Web App (PWA) template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/tretapey/svelte-pwa.
+## Recommended IDE Setup
 
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+[VSCode](https://code.visualstudio.com/) + [Svelte](https://marketplace.visualstudio.com/items?itemName=svelte.svelte-vscode).
 
-```bash
-npx degit tretapey/svelte-pwa my-svelte-pwa
-cd my-svelte-pwa
-```
+## Need an official Svelte framework?
 
-_Note that you will need to have [Node.js](https://nodejs.org) installed._
+Check out [SvelteKit](https://github.com/sveltejs/kit#readme), which is also powered by Vite. Deploy anywhere with its serverless-first approach and adapt to various platforms, with out of the box support for TypeScript, SCSS, and Less, and easily-added support for mdsvex, GraphQL, PostCSS, Tailwind CSS, and more.
 
-## Get started
+## Technical considerations
 
-Install the dependencies...
+**Why use this over SvelteKit?**
 
-```bash
-cd my-svelte-pwa
-npm install
-```
+- It brings its own routing solution which might not be preferable for some users.
+- It is first and foremost a framework that just happens to use Vite under the hood, not a Vite app.
+  `vite dev` and `vite build` wouldn't work in a SvelteKit environment, for example.
 
-...then start [Rollup](https://rollupjs.org):
+This template contains as little as possible to get started with Vite + Svelte, while taking into account the developer experience with regards to HMR and intellisense. It demonstrates capabilities on par with the other `create-vite` templates and is a good starting point for beginners dipping their toes into a Vite + Svelte project.
 
-```bash
-npm run dev
-```
+Should you later need the extended capabilities and extensibility provided by SvelteKit, the template has been structured similarly to SvelteKit so that it is easy to migrate.
 
-Navigate to [localhost:5000](http://localhost:5000). You should see your app running. Edit a component file in `src`, save it, and reload the page to see your changes.
+**Why `global.d.ts` instead of `compilerOptions.types` inside `jsconfig.json` or `tsconfig.json`?**
 
-By default, the server will only respond to requests from localhost. To allow connections from other computers, edit the `sirv` commands in package.json to include the option `--host 0.0.0.0`.
+Setting `compilerOptions.types` shuts out all other types not explicitly listed in the configuration. Using triple-slash references keeps the default TypeScript setting of accepting type information from the entire workspace, while also adding `svelte` and `vite/client` type information.
 
-## PWA Configuration
+**Why include `.vscode/extensions.json`?**
 
-- The `service-worker.js` and `manifest.json` files are in the `public` folder.
-- You should update the icons in `/public/images/icons`
-- For an offline experience edit the `/public/offline.html` file.
-- This PWA is installable. For more information on how to use check [this repo](https://github.com/pwa-builder/pwa-install).
-  Note: If you don't want to make the app installable you can remove the script from the `index.html` file in the `public` folder.
+Other templates indirectly recommend extensions via the README, but this file allows VS Code to prompt the user to install the recommended extension upon opening the project.
 
-For more info, this template was made following this [tutorial](https://codelabs.developers.google.com/codelabs/your-first-pwapp)
+**Why enable `checkJs` in the JS template?**
 
-## Building and running in production mode
+It is likely that most cases of changing variable types in runtime are likely to be accidental, rather than deliberate. This provides advanced typechecking out of the box. Should you like to take advantage of the dynamically-typed nature of JavaScript, it is trivial to change the configuration.
 
-To create an optimised version of the app:
+**Why is HMR not preserving my local component state?**
 
-```bash
-npm run build
+HMR state preservation comes with a number of gotchas! It has been disabled by default in both `svelte-hmr` and `@sveltejs/vite-plugin-svelte` due to its often surprising behavior. You can read the details [here](https://github.com/rixo/svelte-hmr#svelte-hmr).
+
+If you have state that's important to retain within a component, consider creating an external store which would not be replaced by HMR.
+
+```js
+// store.js
+// An extremely simple external store
+import { writable } from 'svelte/store'
+export default writable(0)
 ```
